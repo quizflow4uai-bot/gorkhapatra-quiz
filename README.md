@@ -1,4 +1,4 @@
-# QuizFlow - Loksewa Quiz
+# समसामायिक - Loksewa Quiz
 
 AI-powered Loksewa preparation quiz platform hosted on GitHub Pages.
 

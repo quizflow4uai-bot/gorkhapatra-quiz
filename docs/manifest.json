@@ -1,6 +1,6 @@
 {
-  "name": "QuizFlow - Loksewa Quiz",
-  "short_name": "QuizFlow",
+  "name": "समसामायिक - Loksewa Quiz",
+  "short_name": "समसामायिक",
   "description": "AI-powered Loksewa preparation quiz",
   "start_url": "index.html",
   "display": "standalone",
