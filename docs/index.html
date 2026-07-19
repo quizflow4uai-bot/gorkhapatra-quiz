@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizFlow - Loksewa Quiz</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/quiz.css">
+  <link rel="stylesheet" href="css/result.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <a href="#" class="logo" onclick="app.goHome(); return false;">
+        <span class="logo-icon">📝</span>
+        <span class="logo-text">QuizFlow</span>
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn" aria-label="Search" title="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Dark mode">
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="sun-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button class="icon-btn" id="profile-btn" aria-label="Profile" title="Profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+        <div class="profile-dropdown" id="profile-dropdown">
+          <div class="profile-header">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+              <span class="profile-name">Guest</span>
+              <span class="profile-email">quizflow@user</span>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-quizzes">0</span>
+              <span class="profile-stat-label">Quizzes</span>
+            </div>
+            <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-bookmarks">0</span>
+              <span class="profile-stat-label">Bookmarks</span>
+            </div>
+            <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-best">0%</span>
+              <span class="profile-stat-label">Best</span>
+            </div>
+          </div>
+          <div class="profile-menu">
+            <button class="profile-menu-item" onclick="app.goHistory()">
+              <span>📊</span> History
+            </button>
+            <button class="profile-menu-item" onclick="app.goBookmarks()">
+              <span>🔖</span> Bookmarks
+            </button>
+            <button class="profile-menu-item" onclick="app.goAbout()">
+              <span>ℹ️</span> About
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <button class="sidebar-link active" data-target="home" onclick="app.goHome()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="sidebar-link" data-target="categories" onclick="app.goCategories()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <span>Categories</span>
+      </button>
+      <button class="sidebar-link" data-target="bookmarks" onclick="app.goBookmarks()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>Bookmarks</span>
+      </button>
+      <button class="sidebar-link" data-target="history" onclick="app.goHistory()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>History</span>
+      </button>
+      <button class="sidebar-link" data-target="about" onclick="app.goAbout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>About</span>
+      </button>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <section id="view-home" class="view active">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Welcome! 🙏</h1>
+          <p class="dashboard-subtitle">Start today's Loksewa preparation quiz</p>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card latest-card" id="latest-card">
+            <div class="card-header">
+              <span class="card-icon">📖</span>
+              <h2 class="card-title">New Quiz</h2>
+              <span class="badge badge-new">New</span>
+            </div>
+            <div class="card-body">
+              <h3 id="latest-title" class="latest-title">Loading...</h3>
+              <div class="latest-meta">
+                <span class="meta-item"><span class="meta-icon">📅</span> <span id="latest-date">-</span></span>
+                <span class="meta-item"><span class="meta-icon">📰</span> Gorkhapatra Online</span>
+                <span class="meta-item"><span class="meta-icon">❓</span> <span id="latest-count">-</span> questions</span>
+              </div>
+              <button class="btn btn-primary btn-block" onclick="app.startLatestQuiz()">Start Exam</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3 class="section-title">Categories</h3>
+          <div id="categories-list" class="categories-grid"></div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3 class="section-title">Quizzes by Date</h3>
+          <div id="quizzes-by-date" class="quizzes-by-date"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-quiz" class="view">
+      <div class="quiz-header">
+        <div class="quiz-meta">
+          <span id="quiz-title" class="quiz-title"></span>
+          <span id="quiz-timer" class="quiz-timer">00:00</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div class="quiz-stats">
+          <span id="question-counter">Question 1/10</span>
+          <span id="score-display">Score: 0</span>
+        </div>
+      </div>
+      <div id="quiz-container" class="quiz-container">
+        <div class="question-card">
+          <div class="question-meta">
+            <span id="question-category" class="badge badge-category"></span>
+            <span id="question-difficulty" class="badge badge-difficulty"></span>
+          </div>
+          <h3 id="question-text" class="question-text"></h3>
+          <div id="options-grid" class="options-grid"></div>
+        </div>
+      </div>
+      <div class="quiz-footer">
+        <button id="btn-prev" class="btn btn-secondary" onclick="quiz.prevQuestion()">Previous</button>
+        <button id="btn-next" class="btn btn-primary" onclick="quiz.nextQuestion()">Next</button>
+        <button id="btn-submit" class="btn btn-success hidden" onclick="quiz.submitQuiz()">Submit</button>
+      </div>
+    </section>
+
+    <section id="view-result" class="view">
+      <div class="result-card">
+        <div class="result-header">
+          <h2 class="result-title">Result</h2>
+          <div class="score-circle">
+            <span id="result-score" class="score-number">0</span>
+            <span class="score-total">/ <span id="result-total">0</span></span>
+          </div>
+          <p id="result-percentage" class="result-percentage"></p>
+          <p id="result-message" class="result-message"></p>
+          <p id="result-quote" class="result-quote"></p>
+        </div>
+        <div class="result-details">
+          <div class="result-stat">
+            <span class="result-stat-label">Time</span>
+            <span id="result-time" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Accuracy</span>
+            <span id="result-accuracy" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Points</span>
+            <span id="result-points" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Attempted</span>
+            <span id="result-attempted" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Wrong</span>
+            <span id="result-wrong" class="result-stat-value">-</span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary" onclick="app.startLatestQuiz()">Retry</button>
+          <button class="btn btn-secondary" onclick="app.goHome()">Go Home</button>
+          <button class="btn btn-outline" onclick="result.reviewAnswers()">Review Answers</button>
+        </div>
+      </div>
+      <div id="review-section" class="review-section hidden"></div>
+    </section>
+
+    <section id="view-categories" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Categories</h1>
+          <p class="dashboard-subtitle">Take quizzes by subject</p>
+        </div>
+        <div id="categories-full-list" class="categories-grid"></div>
+      </div>
+    </section>
+
+    <section id="view-bookmarks" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Bookmarks</h1>
+          <p class="dashboard-subtitle">Questions you've bookmarked</p>
+        </div>
+        <div id="bookmarks-list" class="empty-state">
+          <p>No bookmarks yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-history" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Exam History</h1>
+          <p class="dashboard-subtitle">Your past exam results</p>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </div>
+    </section>
+
+    <section id="view-about" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">About</h1>
+          <p class="dashboard-subtitle">From QuizFlow</p>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p>This quiz application automatically generates questions from the Gorkhapatra Online Loksewa preparation special article. Questions are converted into multiple-choice format via AI (Groq LLaMA 3.3 70B).</p>
+            <p>This application is hosted on GitHub Pages and publicly available.</p>
+            <h3>Features</h3>
+            <ul>
+              <li>Daily updated quizzes</li>
+              <li>Multiple choice questions</li>
+              <li>Timed quiz sessions</li>
+              <li>Progress tracking</li>
+              <li>Local result calculation</li>
+            </ul>
+            <h3>Tech Stack</h3>
+            <p><strong>Scraper:</strong> Python + BeautifulSoup<br>
+            <strong>AI Generator:</strong> Groq API + LLaMA 3.3 70B<br>
+            <strong>Frontend:</strong> Vanilla JS + CSS<br>
+            <strong>Hosting:</strong> GitHub Pages</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container">
+      <p>QuizFlow Loksewa Quiz &copy; 2083 | Gorkhapatra Online Source</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/result.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
