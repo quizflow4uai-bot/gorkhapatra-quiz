@@ -59,8 +59,8 @@
           <div class="profile-header">
             <div class="profile-avatar">👤</div>
             <div class="profile-info">
-              <span class="profile-name">Guest</span>
-              <span class="profile-email">quizflow@user</span>
+              <span class="profile-name" id="profile-name">Guest</span>
+              <span class="profile-email" id="profile-email">guest@samasamaik</span>
             </div>
           </div>
           <div class="profile-stats">
@@ -86,6 +86,9 @@
             </button>
             <button class="profile-menu-item" onclick="app.goAbout()">
               <span>ℹ️</span> About
+            </button>
+            <button class="profile-menu-item" onclick="app.handleLogout()">
+              <span>🚪</span> Logout
             </button>
           </div>
         </div>
@@ -129,6 +132,22 @@
           <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
         <span>About</span>
+      </button>
+      <button class="sidebar-link" id="nav-login" data-target="login" onclick="app.goLogin()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+          <polyline points="10 17 15 12 10 7"></polyline>
+          <line x1="15" y1="12" x2="3" y2="12"></line>
+        </svg>
+        <span>Login</span>
+      </button>
+      <button class="sidebar-link hidden" id="nav-logout" onclick="app.handleLogout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
       </button>
     </nav>
   </aside>
@@ -244,6 +263,49 @@
         </div>
       </div>
       <div id="review-section" class="review-section hidden"></div>
+    </section>
+
+    <section id="view-login" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Welcome to Samasamaik</h1>
+          <p class="dashboard-subtitle">Please login or create an account to save your progress</p>
+        </div>
+        <div class="login-card">
+          <div class="login-tabs">
+            <button class="login-tab active" id="tab-login" onclick="app.switchLoginTab('login')">Login</button>
+            <button class="login-tab" id="tab-register" onclick="app.switchLoginTab('register')">Register</button>
+          </div>
+          <div class="login-body">
+            <form id="login-form" onsubmit="app.handleLogin(event)">
+              <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" required placeholder="Enter username">
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required placeholder="Enter password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <form id="register-form" class="hidden" onsubmit="app.handleRegister(event)">
+              <div class="form-group">
+                <label for="register-username">Username</label>
+                <input type="text" id="register-username" required placeholder="Choose username">
+              </div>
+              <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" required placeholder="Choose password">
+              </div>
+              <div class="form-group">
+                <label for="register-confirm">Confirm Password</label>
+                <input type="password" id="register-confirm" required placeholder="Confirm password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="view-categories" class="view">

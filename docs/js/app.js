@@ -2,10 +2,14 @@ const app = {
   currentData: null,
 
   init() {
+    this.updateProfileUI();
     home.loadLatest();
     home.loadCategories();
     home.loadQuizzesByDate();
-    home.loadHistory();
+
+    if (this.isLoggedIn()) {
+      home.loadHistory();
+    }
 
     document.getElementById('sidebar-toggle').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('open');
@@ -50,6 +54,104 @@ const app = {
     }
   },
 
+  isLoggedIn() {
+    return Storage.isLoggedIn();
+  },
+
+  getCurrentUser() {
+    return Storage.getCurrentUser();
+  },
+
+  updateProfileUI() {
+    const user = this.getCurrentUser();
+    const profileName = document.getElementById('profile-name');
+    const profileEmail = document.getElementById('profile-email');
+    const loginNavItem = document.getElementById('nav-login');
+    const logoutNavItem = document.getElementById('nav-logout');
+
+    if (user) {
+      if (profileName) profileName.textContent = user.username;
+      if (profileEmail) profileEmail.textContent = `${user.username}@samasamaik`;
+      if (loginNavItem) loginNavItem.classList.add('hidden');
+      if (logoutNavItem) logoutNavItem.classList.remove('hidden');
+    } else {
+      if (profileName) profileName.textContent = 'Guest';
+      if (profileEmail) profileEmail.textContent = 'guest@samasamaik';
+      if (loginNavItem) loginNavItem.classList.remove('hidden');
+      if (logoutNavItem) logoutNavItem.classList.add('hidden');
+    }
+  },
+
+  switchLoginTab(tab) {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+
+    if (tab === 'login') {
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+    } else {
+      loginForm.classList.add('hidden');
+      registerForm.classList.remove('hidden');
+      tabLogin.classList.remove('active');
+      tabRegister.classList.add('active');
+    }
+  },
+
+  handleLogin(event) {
+    event.preventDefault();
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!username || !password) {
+      alert('Please enter both username and password');
+      return;
+    }
+
+    if (Storage.login(username, password)) {
+      this.updateProfileUI();
+      this.goHome();
+    } else {
+      alert('Invalid username or password');
+    }
+  },
+
+  handleRegister(event) {
+    event.preventDefault();
+    const username = document.getElementById('register-username').value.trim();
+    const password = document.getElementById('register-password').value;
+    const confirm = document.getElementById('register-confirm').value;
+
+    if (!username || !password) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    if (password !== confirm) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    if (Storage.userExists(username)) {
+      alert('Username already exists');
+      return;
+    }
+
+    Storage.saveUser(username, password);
+    Storage.login(username, password);
+    this.updateProfileUI();
+    this.goHome();
+  },
+
+  handleLogout() {
+    Storage.logout();
+    this.updateProfileUI();
+    this.goHome();
+  },
+
   showView(viewId) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.sidebar-link').forEach(n => n.classList.remove('active'));
@@ -58,6 +160,7 @@ const app = {
       home: 'view-home',
       quiz: 'view-quiz',
       result: 'view-result',
+      login: 'view-login',
       categories: 'view-categories',
       bookmarks: 'view-bookmarks',
       history: 'view-history',
@@ -81,6 +184,11 @@ const app = {
 
   goHome() {
     this.showView('home');
+    document.getElementById('sidebar').classList.remove('open');
+  },
+
+  goLogin() {
+    this.showView('login');
     document.getElementById('sidebar').classList.remove('open');
   },
 

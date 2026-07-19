@@ -1,10 +1,72 @@
 const Storage = {
+  KEY_USERS: 'samasamaik_users',
+  KEY_SESSION: 'samasamaik_session',
   KEY_RESULTS: 'loksewa_quiz_results',
   KEY_BOOKMARKS: 'loksewa_quiz_bookmarks',
 
+  getCurrentUser() {
+    try {
+      const session = localStorage.getItem(this.KEY_SESSION);
+      return session ? JSON.parse(session) : null;
+    } catch {
+      return null;
+    }
+  },
+
+  getUserKey(baseKey) {
+    const user = this.getCurrentUser();
+    if (user && user.username) {
+      return `${baseKey}_${user.username}`;
+    }
+    return baseKey;
+  },
+
+  getUsers() {
+    try {
+      const data = localStorage.getItem(this.KEY_USERS);
+      return data ? JSON.parse(data) : {};
+    } catch {
+      return {};
+    }
+  },
+
+  saveUser(username, password) {
+    const users = this.getUsers();
+    users[username] = { password, createdAt: new Date().toISOString() };
+    localStorage.setItem(this.KEY_USERS, JSON.stringify(users));
+  },
+
+  validateUser(username, password) {
+    const users = this.getUsers();
+    return users[username] && users[username].password === password;
+  },
+
+  userExists(username) {
+    const users = this.getUsers();
+    return !!users[username];
+  },
+
+  login(username, password) {
+    if (this.validateUser(username, password)) {
+      const session = { username, loginTime: new Date().toISOString() };
+      localStorage.setItem(this.KEY_SESSION, JSON.stringify(session));
+      return true;
+    }
+    return false;
+  },
+
+  logout() {
+    localStorage.removeItem(this.KEY_SESSION);
+  },
+
+  isLoggedIn() {
+    return !!this.getCurrentUser();
+  },
+
   getResults() {
     try {
-      const data = localStorage.getItem(this.KEY_RESULTS);
+      const key = this.getUserKey(this.KEY_RESULTS);
+      const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : [];
     } catch {
       return [];
@@ -15,11 +77,13 @@ const Storage = {
     const results = this.getResults();
     results.unshift(result);
     if (results.length > 50) results.pop();
-    localStorage.setItem(this.KEY_RESULTS, JSON.stringify(results));
+    const key = this.getUserKey(this.KEY_RESULTS);
+    localStorage.setItem(key, JSON.stringify(results));
   },
 
   clearResults() {
-    localStorage.removeItem(this.KEY_RESULTS);
+    const key = this.getUserKey(this.KEY_RESULTS);
+    localStorage.removeItem(key);
   },
 
   getStats() {
@@ -36,7 +100,8 @@ const Storage = {
 
   getBookmarks() {
     try {
-      const data = localStorage.getItem(this.KEY_BOOKMARKS);
+      const key = this.getUserKey(this.KEY_BOOKMARKS);
+      const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : [];
     } catch {
       return [];
@@ -59,7 +124,8 @@ const Storage = {
         difficulty: question.difficulty
       });
     }
-    localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(bookmarks));
+    const key = this.getUserKey(this.KEY_BOOKMARKS);
+    localStorage.setItem(key, JSON.stringify(bookmarks));
     return bookmarks;
   },
 
