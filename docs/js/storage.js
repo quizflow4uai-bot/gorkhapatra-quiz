@@ -132,5 +132,44 @@ const Storage = {
   isBookmarked(questionText) {
     const bookmarks = this.getBookmarks();
     return bookmarks.some(b => b.question === questionText);
+  },
+
+  getSubscribers() {
+    try {
+      const data = localStorage.getItem('samasamaik_subscribers');
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  addSubscriber(email) {
+    const subscribers = this.getSubscribers();
+    if (!subscribers.find(s => s.email === email)) {
+      subscribers.push({
+        email,
+        subscribedAt: new Date().toISOString(),
+        active: true
+      });
+      localStorage.setItem('samasamaik_subscribers', JSON.stringify(subscribers));
+      return true;
+    }
+    return false;
+  },
+
+  isSubscribed(email) {
+    const subscribers = this.getSubscribers();
+    return subscribers.some(s => s.email === email && s.active);
+  },
+
+  incrementVisitorCount() {
+    const count = parseInt(localStorage.getItem('samasamaik_visitors') || '0', 10);
+    const newCount = count + 1;
+    localStorage.setItem('samasamaik_visitors', newCount.toString());
+    return newCount;
+  },
+
+  getVisitorCount() {
+    return parseInt(localStorage.getItem('samasamaik_visitors') || '0', 10);
   }
 };

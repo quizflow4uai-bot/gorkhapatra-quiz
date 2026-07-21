@@ -11,6 +11,17 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2563eb">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+
+  <!-- Google Analytics (optional - replace with your GA4 ID) -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  -->
 </head>
 <body>
   <header class="app-header">
@@ -73,6 +84,10 @@
               <span class="profile-stat-label">Bookmarks</span>
             </div>
             <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-subscribers">0</span>
+              <span class="profile-stat-label">Subscribers</span>
+            </div>
+            <div class="profile-stat">
               <span class="profile-stat-value" id="profile-best">0%</span>
               <span class="profile-stat-label">Best</span>
             </div>
@@ -124,6 +139,15 @@
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
         <span>History</span>
+      </button>
+      <button class="sidebar-link" data-target="subscribers" onclick="app.goSubscribers()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Subscribers</span>
       </button>
       <button class="sidebar-link" data-target="about" onclick="app.goAbout()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -182,6 +206,20 @@
         <div class="dashboard-section">
           <h3 class="section-title">Categories</h3>
           <div id="categories-list" class="categories-grid"></div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3 class="section-title">Subscribe for Updates</h3>
+          <div class="subscribe-card">
+            <p>Get notified when new quizzes are published every Wednesday.</p>
+            <form id="subscribe-form" onsubmit="app.handleSubscribe(event)">
+              <div class="subscribe-input-group">
+                <input type="email" id="subscribe-email" required placeholder="Enter your email address">
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+              </div>
+            </form>
+            <p class="subscribe-note">Free forever. No spam, only quiz updates.</p>
+          </div>
         </div>
 
         <div class="dashboard-section">
@@ -308,6 +346,16 @@
       </div>
     </section>
 
+    <section id="view-subscribers" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Subscribers</h1>
+          <p class="dashboard-subtitle">People who subscribed for quiz updates</p>
+        </div>
+        <div id="subscribers-list" class="subscribers-list"></div>
+      </div>
+    </section>
+
     <section id="view-categories" class="view">
       <div class="dashboard">
         <div class="dashboard-header">
@@ -411,7 +459,8 @@
 
   <footer class="app-footer">
     <div class="container">
-      <p>समसामयिक Loksewa Quiz &copy; 2083 | Gorkhapatra Online Source</p>
+      <p>समसामायिक Loksewa Quiz &copy; 2083 | Gorkhapatra Online Source</p>
+      <p class="visitor-counter">👁️ Visitors: <span id="visitor-count">0</span></p>
     </div>
   </footer>
 

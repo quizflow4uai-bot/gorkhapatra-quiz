@@ -3,6 +3,7 @@ const app = {
 
   init() {
     this.updateProfileUI();
+    this.updateVisitorCount();
     home.loadLatest();
     home.loadCategories();
     home.loadQuizzesByDate();
@@ -164,6 +165,7 @@ const app = {
       categories: 'view-categories',
       bookmarks: 'view-bookmarks',
       history: 'view-history',
+      subscribers: 'view-subscribers',
       about: 'view-about'
     };
     const target = document.getElementById(viewMap[viewId] || 'view-home');
@@ -179,6 +181,9 @@ const app = {
     }
     if (viewId === 'bookmarks') {
       home.loadBookmarks();
+    }
+    if (viewId === 'subscribers') {
+      this.loadSubscribers();
     }
   },
 
@@ -205,6 +210,58 @@ const app = {
   goHistory() {
     this.showView('history');
     document.getElementById('sidebar').classList.remove('open');
+  },
+
+  goSubscribers() {
+    this.showView('subscribers');
+    this.loadSubscribers();
+    document.getElementById('sidebar').classList.remove('open');
+  },
+
+  loadSubscribers() {
+    const subscribers = Storage.getSubscribers();
+    const container = document.getElementById('subscribers-list');
+
+    if (subscribers.length === 0) {
+      container.innerHTML = '<div class="empty-state"><p>No subscribers yet.</p></div>';
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="subscribers-header">
+        <span>Total Subscribers: <strong>${subscribers.length}</strong></span>
+        <button class="btn btn-secondary btn-sm" onclick="app.exportSubscribers()">Export CSV</button>
+      </div>
+      <div class="subscribers-grid">
+        ${subscribers.map((s, idx) => `
+          <div class="subscriber-card">
+            <span class="subscriber-email">${idx + 1}. ${Utils.escapeHtml(s.email)}</span>
+            <span class="subscriber-date">${new Date(s.subscribedAt).toLocaleDateString('en-US')}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  },
+
+  exportSubscribers() {
+    const subscribers = Storage.getSubscribers();
+    if (subscribers.length === 0) {
+      alert('No subscribers to export');
+      return;
+    }
+
+    let csv = 'Email,Subscribed At\n';
+    subscribers.forEach(s => {
+      csv += `${s.email},${new Date(s.subscribedAt).toLocaleString()}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'subscribers.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   },
 
   goAbout() {
@@ -275,10 +332,48 @@ const app = {
     const results = Storage.getResults();
     const bookmarks = Storage.getBookmarks();
     const stats = Storage.getStats();
+    const subscribers = Storage.getSubscribers();
     
     document.getElementById('profile-quizzes').textContent = results.length;
     document.getElementById('profile-bookmarks').textContent = bookmarks.length;
+    document.getElementById('profile-subscribers').textContent = subscribers.length;
     document.getElementById('profile-best').textContent = stats ? `${stats.bestScore}%` : '0%';
+  },
+
+  handleSubscribe(event) {
+    event.preventDefault();
+    const emailInput = document.getElementById('subscribe-email');
+    const email = emailInput.value.trim();
+
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    if (Storage.isSubscribed(email)) {
+      alert('This email is already subscribed!');
+      return;
+    }
+
+    Storage.addSubscriber(email);
+    emailInput.value = '';
+    alert('Thank you for subscribing! You will receive quiz updates every Wednesday.');
+  },
+
+  updateVisitorCount() {
+    const count = Storage.incrementVisitorCount();
+    const countElement = document.getElementById('visitor-count');
+    if (countElement) {
+      countElement.textContent = count;
+    }
+  },
+
+  getVisitorCount() {
+    const count = Storage.getVisitorCount();
+    const countElement = document.getElementById('visitor-count');
+    if (countElement) {
+      countElement.textContent = count;
+    }
   }
 };
 
