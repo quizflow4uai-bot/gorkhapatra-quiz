@@ -21,11 +21,21 @@ const resultView = {
   },
 
   downloadPDF() {
-    if (!this.currentResult || !quiz.data) return;
+    if (!this.currentResult) {
+      alert('No result available. Please complete a quiz first.');
+      return;
+    }
 
     const result = this.currentResult;
-    const data = quiz.data;
+    const data = quiz.data || app.currentData;
+    
+    if (!data) {
+      alert('Quiz data not available. Please try again or refresh the page.');
+      return;
+    }
+
     const title = data.metadata?.title || 'Quiz';
+    const questions = data.questions || [];
     const date = new Date().toLocaleString();
 
     let html = `<!DOCTYPE html>
