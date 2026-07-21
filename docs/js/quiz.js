@@ -209,6 +209,14 @@ const quiz = {
     };
 
     Storage.saveResult(result);
+    
+    const quizSession = {
+      resultId: result.id,
+      data: this.data,
+      answers: this.answers
+    };
+    localStorage.setItem('samasamaik_current_quiz', JSON.stringify(quizSession));
+    
     resultView.show(result);
 
     const footer = document.querySelector('.quiz-footer');

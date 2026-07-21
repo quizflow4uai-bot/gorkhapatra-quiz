@@ -3,6 +3,20 @@ const resultView = {
 
   show(result) {
     this.currentResult = result;
+    try {
+      this.quizData = (typeof quiz !== 'undefined' && quiz.data) ? quiz.data : null;
+      if (!this.quizData && typeof app !== 'undefined' && app.currentData) {
+        this.quizData = app.currentData;
+      }
+      if (!this.quizData) {
+        const session = JSON.parse(localStorage.getItem('samasamaik_current_quiz'));
+        if (session && session.data) {
+          this.quizData = session.data;
+        }
+      }
+    } catch {
+      this.quizData = null;
+    }
     document.getElementById('result-score').textContent = result.score;
     document.getElementById('result-total').textContent = result.total;
     document.getElementById('result-percentage').textContent = `${result.percentage}%`;
@@ -27,7 +41,7 @@ const resultView = {
     }
 
     const result = this.currentResult;
-    const data = quiz.data || app.currentData;
+    const data = this.quizData;
     
     if (!data) {
       alert('Quiz data not available. Please try again or refresh the page.');
@@ -108,7 +122,18 @@ const resultView = {
   <h2>Answer Review</h2>`;
 
     data.questions.forEach((q, idx) => {
-      const userAnswer = quiz.answers[idx];
+      let userAnswer = null;
+      try {
+        const session = JSON.parse(localStorage.getItem('samasamaik_current_quiz'));
+        if (session && session.answers) {
+          userAnswer = session.answers[idx];
+        }
+      } catch {
+        // ignore
+      }
+      if (userAnswer === null && typeof quiz !== 'undefined' && quiz.answers) {
+        userAnswer = quiz.answers[idx];
+      }
       const isCorrect = userAnswer === q.correctAnswer;
       const isUnanswered = userAnswer === null;
       const statusClass = isCorrect ? 'correct' : isUnanswered ? 'unanswered' : 'wrong';
